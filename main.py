@@ -178,5 +178,14 @@ booking_btn.grid(row=1, column=4, padx=5, pady=5)
 
 
 
+scrollbar = Scrollbar(root)
+scrollbar.grid()
+
+mylist = Listbox(root, yscrollcommand = scrollbar.set )
+for line in range(100):
+   mylist.insert(END, "This is line number " + str(line))
+
+mylist.grid()
+scrollbar.config( command = mylist.yview )
 
 root.mainloop()

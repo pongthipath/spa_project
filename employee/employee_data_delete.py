@@ -17,13 +17,7 @@ with open(path + filename) as json_file:
     data = json.load(json_file)
     for p in data['EMPLOYEES']:
         if(p['name'] == name):
-            print(p)
-            print('Token: ')
-            token = input()
-            print('Hand_pay: ')
-            hp = input()
-            p['token'] = int(token)
-            p['hand_pay'] = int(hp)
+            data['EMPLOYEES'].remove(p)
             print(p)
     
     write_json(data)
