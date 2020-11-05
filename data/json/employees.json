@@ -1,1 +1,1 @@
-{"EMPLOYEES": [{"name": "ko", "token": 1, "hand_pay": 23}, {"name": "hello", "token": 0, "hand_pay": 0}]}
+{"EMPLOYEES": [{"name": "\u0e15\u0e32", "hand_pay": [{"Dome": 2}, {"PT": 4}, {"CM": 1}]}, {"name": "\u0e15\u0e32\u0e25", "hand_pay": []}, {"name": "\u0e08\u0e34", "hand_pay": [{"Dome": 7}, {"CM": 2}]}, {"name": "\u0e2a\u0e38", "hand_pay": []}, {"name": "\u0e40\u0e2d\u0e4b", "hand_pay": []}, {"name": "\u0e14\u0e32\u0e27", "hand_pay": []}]}

@@ -26,8 +26,7 @@ def update_data():
         temp = data['ROOMS'] 
   
         y = {
-            'room_name': name,
-            'token': 0
+            'room_name': name
         } 
     
         temp.append(y)

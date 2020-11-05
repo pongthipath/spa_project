@@ -27,6 +27,7 @@ def update_data():
   
         y = {
             'treatment_name': name,
+            'duration': 0,
             'token': 0
         } 
     

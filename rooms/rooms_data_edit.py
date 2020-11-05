@@ -18,9 +18,5 @@ with open(path + filename) as json_file:
     for p in data['ROOMS']:
         if(p['room_name'] == name):
             print(p)
-            print('Token: ')
-            token = input()
-            p['token'] = int(token)
-            print(p)
     
     write_json(data)
