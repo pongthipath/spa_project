@@ -9,7 +9,6 @@ from employee_info import *
 
 root = Tk()
 root.title("Spa!")
-root.geometry("800x1000")
 
 # ++++++ All Function +++++++
 def see_history():
@@ -121,22 +120,22 @@ for text, mode, num in PROMOTIONS:
 
 # ++++++ Check employees +++++++
 
-active_employee_frame = LabelFrame(root, text="พนักงาน",padx=60, pady=30)
-active_employee_frame.grid(row=1, column=1, padx=10)
-
-active_employee_frame.after(500)
-for text, mode, num, time in EMPLOYEES:
-    Label(active_employee_frame, text=text).grid(row=num+1, column=0, padx=5, pady=2)
+active_employee_frame = LabelFrame(root, text="ข้อมูล",padx=60, pady=30)
+active_employee_frame.grid(row=1, column=1, padx=10, pady=10)
 
 employee_info_button = Button(active_employee_frame, text="ข้อมูลพนักงาน", command=employee_info)
 employee_info_button.grid(row=0, column=0, padx=5, pady=5)
+employee_info_button = Button(active_employee_frame, text="ข้อมูลห้อง", command=employee_info)
+employee_info_button.grid(row=0, column=1, padx=5, pady=5)
+employee_info_button = Button(active_employee_frame, text="ข้อมูลทรีทเม้นท์", command=employee_info)
+employee_info_button.grid(row=0, column=2, padx=5, pady=5)
 
 
 
 # ++++++ Menu +++++++
 
 menu_frame = LabelFrame(root, text="เมนูเสริม",padx=60, pady=30)
-menu_frame.grid(row=2, column=0, padx=10)
+menu_frame.grid(row=2, column=0, padx=10, pady=10)
 
 add_customer_btn = Button(menu_frame, text="เพิ่มลูกค้า", command=add_customer)
 add_customer_btn.grid(row=1, column=0, padx=5, pady=5)
