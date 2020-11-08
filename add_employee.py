@@ -1,12 +1,12 @@
 from tkinter import *
 from datetime import *
-import employee_data.employee_data_write as em
+from employee_data.employee_data_write import *
 from employee_data.employee_data_read import *
 from employee_data.employee_data_delete import *
 
 def employee_add():
     employee_add_window = Toplevel()
-    employee_add_window.title("Spa - เพิ่มพนักงานพนักงาน!")
+    employee_add_window.title("Spa - เพิ่มพนักงาน!")
 
     def delete_employee(name_e):
         delete_this_employee(name_e)
@@ -17,7 +17,7 @@ def employee_add():
             all_name_e_listbox.insert(END, name)
 
     def add_employee(name_e):
-        em.add_new_employee(name_e)
+        add_new_employee(name_e)
         status_label.config(text=str(name_e) + " ถูกเพิ่มแล้ว!")
         all_name_e_listbox.delete(0, END)
         all_name_e = get_employee_all_name()

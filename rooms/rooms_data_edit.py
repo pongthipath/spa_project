@@ -16,7 +16,7 @@ def write_json(data):
 with open(path + filename) as json_file:
     data = json.load(json_file)
     for p in data['ROOMS']:
-        if(p['room_name'] == name):
+        if(p['name'] == name):
             print(p)
     
     write_json(data)

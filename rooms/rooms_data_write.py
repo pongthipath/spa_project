@@ -1,40 +1,40 @@
 import json 
 import os
 
-name = input()
 
-os.chdir('../')
-path = os.getcwd() + '/data/json/'
+path = os.path.abspath('../spa_project') + '/data/json/'
 filename = 'rooms.json'
 
-# function to add to JSON 
-def write_json(data): 
-    with open(path + filename,'w') as f: 
-        json.dump(data, f) 
+print(path)
 
-def init_json_file():
-    init_data = {
-        'ROOMS':[]
-    }
-    with open(path + filename, 'w') as outfile:
-        json.dump(init_data, outfile)
+def add_new_room(name):
+    def write_json(data): 
+        with open(path + filename,'w') as f: 
+            json.dump(data, f) 
 
-def update_data():
-    with open(path + filename) as json_file: 
-        data = json.load(json_file) 
+    def init_json_file():
+        init_data = {
+            'ROOMS':[]
+        }
+        with open(path + filename, 'w') as outfile:
+            json.dump(init_data, outfile)
+
+    def update_data():
+        with open(path + filename) as json_file: 
+            data = json.load(json_file) 
       
-        temp = data['ROOMS'] 
+            temp = data['ROOMS'] 
   
-        y = {
-            'room_name': name
-        } 
+            y = {
+                'name': name
+            } 
     
-        temp.append(y)
-    write_json(data)
+            temp.append(y)
+        write_json(data)
       
-try:
-    update_data()
+    try:
+        update_data()
 
-except FileNotFoundError:
-    init_json_file()
-    update_data()
+    except FileNotFoundError:
+        init_json_file()
+        update_data()

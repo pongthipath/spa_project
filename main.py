@@ -5,6 +5,8 @@ from add_customer import *
 from threading import Thread
 from booking import *
 from employee_info import *
+from add_employee import *
+from room_info import *
 
 
 root = Tk()
@@ -125,7 +127,7 @@ active_employee_frame.grid(row=1, column=1, padx=10, pady=10)
 
 employee_info_button = Button(active_employee_frame, text="ข้อมูลพนักงาน", command=employee_info)
 employee_info_button.grid(row=0, column=0, padx=5, pady=5)
-employee_info_button = Button(active_employee_frame, text="ข้อมูลห้อง", command=employee_info)
+employee_info_button = Button(active_employee_frame, text="ข้อมูลห้อง", command=room_info)
 employee_info_button.grid(row=0, column=1, padx=5, pady=5)
 employee_info_button = Button(active_employee_frame, text="ข้อมูลทรีทเม้นท์", command=employee_info)
 employee_info_button.grid(row=0, column=2, padx=5, pady=5)
