@@ -11,7 +11,7 @@ def get_room_some(name):
         data = json.load(json_file)
         for p in data['ROOMS']:
             if(p['name'] == name):
-                print(p)
+                return p
 
 def get_room_all_name():
 

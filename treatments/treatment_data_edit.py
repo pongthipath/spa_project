@@ -16,7 +16,7 @@ def write_json(data):
 with open(path + filename) as json_file:
     data = json.load(json_file)
     for p in data['TREATMENTS']:
-        if(p['treatment_name'] == name):
+        if(p['name'] == name):
             print(p)
             print('Token: ')
             token = input()

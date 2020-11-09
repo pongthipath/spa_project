@@ -5,7 +5,7 @@ from add_room import *
 
 def room_info():
     room_info_window = Toplevel()
-    room_info_window.title("Spa - ข้อมูลพนักงาน!")
+    room_info_window.title("Spa - ข้อมูลห้อง!")
 
 
     all_name_e_listbox = Listbox(room_info_window)
