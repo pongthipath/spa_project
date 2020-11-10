@@ -13,6 +13,10 @@ from treatment_info import *
 root = Tk()
 root.title("Spa!")
 
+room_list = list()
+employee_list = list()
+treatment_list = list()
+
 # ++++++ All Function +++++++
 def see_history():
     return
@@ -24,8 +28,56 @@ def see_promotion():
     return
 
 def customer_use():
+    room_list.clear()
+    employee_list.clear()
+    treatment_list.clear()
+    r_info_listbox.delete(0, END)
+    e_info_listbox.delete(0, END)
+    t_info_listbox.delete(0, END)
     return
-  
+
+def select_room_use(room_selected):
+    room_list.append(room_selected)
+    r_info_listbox.delete(0, END)
+    for name in room_list:
+        r_info_listbox.insert(END, name)
+    print(room_list)
+
+def select_employee_use(employee_selected):
+    employee_list.append(employee_selected)
+    e_info_listbox.delete(0, END)
+    for name in employee_list:
+        e_info_listbox.insert(END, name)
+    print(employee_list)
+
+def select_treatment_use(treatment_selected):
+    treatment_list.append(treatment_selected)
+    t_info_listbox.delete(0, END)
+    for name in treatment_list:
+        t_info_listbox.insert(END, name)
+    print(treatment_list)
+
+def remove_room_out(room_selected):
+    room_list.remove(room_selected)
+    r_info_listbox.delete(0, END)
+    for name in room_list:
+        r_info_listbox.insert(END, name)
+    print(room_list)
+
+def remove_employee_out(employee_selected):
+    employee_list.remove(employee_selected)
+    e_info_listbox.delete(0, END)
+    for name in employee_list:
+        e_info_listbox.insert(END, name)
+    print(employee_list)
+
+def remove_treatment_out(treatment_selected):
+    treatment_list.remove(treatment_selected)
+    t_info_listbox.delete(0, END)
+    for name in treatment_list:
+        t_info_listbox.insert(END, name)
+    print(treatment_list)
+
 
 # ++++++ Date +++++++
 
@@ -38,7 +90,7 @@ date_label.grid(row=0, column=0, columnspan=3, padx=5)
 # ++++++ service +++++++
 
 service_frame = LabelFrame(root, text="ลูกค้าใช้บริการ")
-service_frame.grid(row=1, column=0, padx=10, pady=10)
+service_frame.grid(row=1, column=0, columnspan=3, padx=10, pady=10)
 
 c_name = Entry(service_frame, width=30)
 c_name.grid(row=0, column=1, padx=20, pady=5)
@@ -49,82 +101,77 @@ c_name_label.grid(row=0, column=0)
 customer_use_btn = Button(service_frame, text="ใช้บริการ", command=lambda: customer_use(), padx=30, pady=5)
 customer_use_btn.grid(row=3, column=0, columnspan=3, padx=5, pady=5)
 
-room_frame = LabelFrame(service_frame, text="ห้อง", padx=15, pady=145)
+room_frame = LabelFrame(service_frame, text="ห้อง",)
 room_frame.grid(row=2, column=0, padx=10, pady=10)
-employee_frame = LabelFrame(service_frame, text="พนักงาน", padx=20, pady=215)
+employee_frame = LabelFrame(service_frame, text="พนักงาน")
 employee_frame.grid(row=2, column=1, padx=10, pady=10)
-promotion_frame = LabelFrame(service_frame, text="ทรีทเม้นท์")
-promotion_frame.grid(row=2, column=2, padx=10, pady=10)
+treatment_frame = LabelFrame(service_frame, text="ทรีทเม้นท์")
+treatment_frame.grid(row=2, column=2, padx=10, pady=10)
 
-ROOMS = [
-    ("VIP","VIP", 0),
-    ("ทัวร์มาลิน","ทัวร์มาลิน", 1),
-    ("โดม","โดม", 2),
-    ("ห้อง2","ห้อง2", 3),
-    ("ห้อง3","ห้อง3", 4),
-    ("ห้อง4","ห้อง4", 5),
-    ("ห้อง5","ห้อง5", 6),
-    ("ห้อง7","ห้อง7", 7),
-    ("ห้อง8","ห้อง8", 8),
-    ("อบใน+ขัด","อบใน+ขัด", 9),
-    ("อบนอก","อบนอก", 10),
-]
+# ++++++ room service +++++++
+status_r_1 = Label(room_frame, text="เลือก")
+status_r_1.grid(row=0, column=0)
+status_r_2 = Label(room_frame, text="ใช้")
+status_r_2.grid(row=0, column=2)
 
-EMPLOYEES = [
-    ("ตา","ตา", 0, 0),
-    ("ตาล","ตาล", 1, 0),
-    ("จิ","จิ", 2, 0),
-    ("สุ","สุ", 3, 0),
-    ("เอ๋","เอ๋", 4, 0),
-    ("ดาว","ดาว", 5, 0),
-]
+all_name_r_listbox = Listbox(room_frame)
+all_name_r_listbox.grid(row=1, column=0, padx=20, pady=5)
+r_info_listbox = Listbox(room_frame)
+r_info_listbox.grid(row=1, column=2, padx=20, pady=5)
 
-PROMOTIONS = [
-    ("PT","PT", 0),
-    ("Dome","Dome", 1),
-    ("CM","CM", 2),
-    ("M1","M1", 3),
-    ("IBSW","IBSW", 4),
-    ("CV","CV", 5),
-    ("RF","RF", 6),
-    ("AR","AR", 7),
-    ("OM","OM", 8),
-    ("หน้าA","หน้าA", 9),
-    ("หน้าB(NGLM)","หน้าB(NGLM)", 10),
-    ("นวดไทย","นวดไทย", 11),
-    ("ตัวชุดA","ตัวชุดA", 12),
-    ("ตัวชุดB","ตัวชุดB", 13),
-    ("ตัวชุดC","ตัวชุดC", 14),
-    ("ตัวชุดD(WM)","ตัวชุดD(WM)", 15),
-    ("ตัวชุดE","ตัวชุดE", 16),
-    ("BMอก","BMอก", 17),
-    ("Wax(แขา,ขา)","Wax(แขา,ขา)", 18),
-    ("Wax(รักแร้)","Wax(รักแร้)", 19),
-    ("ปิดผมขาว","ปิดผมขาว", 20)
-]
+all_name_r = get_room_all_name()
+for name in all_name_r:
+    all_name_r_listbox.insert(END, name)
 
-room = StringVar()
-room.set("VIP")
+select_r = Button(room_frame, text=">>", command=lambda: select_room_use(all_name_r_listbox.get(ANCHOR)))
+select_r.grid(row=1, column=1, padx=5, pady=5)
+remove_r = Button(room_frame, text="ลบ", command=lambda: remove_room_out(r_info_listbox.get(ANCHOR)))
+remove_r.grid(row=2, column=1, padx=5, pady=5)
 
-employee = StringVar()
-employee.set("ตา")
+# ++++++ employee service +++++++
+status_e_1 = Label(employee_frame, text="เลือก")
+status_e_1.grid(row=0, column=0)
+status_e_2 = Label(employee_frame, text="ใช้")
+status_e_2.grid(row=0, column=2)
 
-promotion = StringVar()
-promotion.set("PT")
+all_name_e_listbox = Listbox(employee_frame)
+all_name_e_listbox.grid(row=1, column=0, padx=20, pady=5)
+e_info_listbox = Listbox(employee_frame)
+e_info_listbox.grid(row=1, column=2, padx=20, pady=5)
 
-for text, mode, num in ROOMS:
-    Radiobutton(room_frame, text=text, variable=room, value=mode).grid(row=num,padx=5, pady=2)
+all_name_e = get_employee_all_name()
+for name in all_name_e:
+    all_name_e_listbox.insert(END, name)
 
-for text, mode, num, time in EMPLOYEES:
-    Radiobutton(employee_frame, text=text, variable=employee, value=mode).grid(row=num,padx=5, pady=2)
+select_e = Button(employee_frame, text=">>", command=lambda: select_employee_use(all_name_e_listbox.get(ANCHOR)))
+select_e.grid(row=1, column=1, padx=5, pady=5)
+remove_e = Button(employee_frame, text="ลบ", command=lambda: remove_employee_out(e_info_listbox.get(ANCHOR)))
+remove_e.grid(row=2, column=1, padx=5, pady=5)
 
-for text, mode, num in PROMOTIONS:
-    Checkbutton(promotion_frame, text=text).grid(row=num,padx=5, pady=2)
+# ++++++ treatment service +++++++
+status_t_1 = Label(treatment_frame, text="เลือก")
+status_t_1.grid(row=0, column=0)
+status_t_2 = Label(treatment_frame, text="ใช้")
+status_t_2.grid(row=0, column=2)
+
+all_name_t_listbox = Listbox(treatment_frame)
+all_name_t_listbox.grid(row=1, column=0, padx=20, pady=5)
+t_info_listbox = Listbox(treatment_frame)
+t_info_listbox.grid(row=1, column=2, padx=20, pady=5)
+
+all_name_t = get_treatment_all_name()
+for name in all_name_t:
+    all_name_t_listbox.insert(END, name)
+
+select_t = Button(treatment_frame, text=">>", command=lambda: select_treatment_use(all_name_t_listbox.get(ANCHOR)))
+select_t.grid(row=1, column=1, padx=5, pady=5)
+remove_t = Button(treatment_frame, text="ลบ", command=lambda: remove_treatment_out(t_info_listbox.get(ANCHOR)))
+remove_t.grid(row=2, column=1, padx=5, pady=5)
 
 # ++++++ Check employees +++++++
 
 active_employee_frame = LabelFrame(root, text="ข้อมูล",padx=60, pady=30)
-active_employee_frame.grid(row=1, column=1, padx=10, pady=10)
+active_employee_frame.grid(row=2, column=1, padx=10, pady=10)
 
 employee_info_button = Button(active_employee_frame, text="ข้อมูลพนักงาน", command=employee_info)
 employee_info_button.grid(row=0, column=0, padx=5, pady=5)
