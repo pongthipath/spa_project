@@ -50,11 +50,21 @@ def select_employee_use(employee_selected):
         e_info_listbox.insert(END, name)
     print(employee_list)
 
-def select_treatment_use(treatment_selected):
-    treatment_list.append(treatment_selected)
+def select_treatment_use(treatment_selected, amount):
+    if(amount == ''):
+        return
+    for name in treatment_list:
+        if(treatment_selected == name['treatment']):
+            return
+    this_treatment = {
+        'treatment' : treatment_selected,
+        'amount' : amount
+    }
+    treatment_list.append(this_treatment)
     t_info_listbox.delete(0, END)
     for name in treatment_list:
-        t_info_listbox.insert(END, name)
+        show_name = name['treatment'] + ":" + name['amount']
+        t_info_listbox.insert(END, show_name)
     print(treatment_list)
 
 def remove_room_out(room_selected):
@@ -71,8 +81,13 @@ def remove_employee_out(employee_selected):
         e_info_listbox.insert(END, name)
     print(employee_list)
 
-def remove_treatment_out(treatment_selected):
-    treatment_list.remove(treatment_selected)
+def remove_treatment_out(treatment_select):
+    treatment_selected = treatment_select.split(":")
+    this_treatment = {
+        'treatment' : treatment_selected[0],
+        'amount' : treatment_selected[1]
+    }
+    treatment_list.remove(this_treatment)
     t_info_listbox.delete(0, END)
     for name in treatment_list:
         t_info_listbox.insert(END, name)
@@ -163,10 +178,14 @@ all_name_t = get_treatment_all_name()
 for name in all_name_t:
     all_name_t_listbox.insert(END, name)
 
-select_t = Button(treatment_frame, text=">>", command=lambda: select_treatment_use(all_name_t_listbox.get(ANCHOR)))
+select_t = Button(treatment_frame, text=">>", command=lambda: select_treatment_use(all_name_t_listbox.get(ANCHOR), amount_entry.get()))
 select_t.grid(row=1, column=1, padx=5, pady=5)
+amount_label = Label(treatment_frame, text="จำนวน: ")
+amount_label.grid(row=2, column=0, padx=5, pady=5)
+amount_entry = Entry(treatment_frame, width=5)
+amount_entry.grid(row=2, column=1, columnspan=3, padx=5, pady=5)
 remove_t = Button(treatment_frame, text="ลบ", command=lambda: remove_treatment_out(t_info_listbox.get(ANCHOR)))
-remove_t.grid(row=2, column=1, padx=5, pady=5)
+remove_t.grid(row=3, column=1, padx=5, pady=5)
 
 # ++++++ Check employees +++++++
 
