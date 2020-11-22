@@ -25,5 +25,4 @@ def get_treatment_all():
 
     with open(path + filename) as json_file:
         data = json.load(json_file)
-        print(data['TREATMENTS'])
         return data['TREATMENTS']

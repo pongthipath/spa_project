@@ -14,7 +14,6 @@ def delete_this_customer_info_by_id(id_c):
         for p in data['CUSTOMERS']:
             if(p['id'] == id_c):
                 data['CUSTOMERS'].remove(p)
-                print(p)
     
         write_json(data)
 
@@ -28,6 +27,5 @@ def delete_this_customer_info_by_name(name):
         for p in data['CUSTOMERS']:
             if(p['fname'] == name):
                 data['CUSTOMERS'].remove(p)
-                print(p)
     
         write_json(data)

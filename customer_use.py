@@ -1,3 +1,4 @@
 from datetime import *
-import sqlite3
 
+def confirm_customer(name):
+    return name

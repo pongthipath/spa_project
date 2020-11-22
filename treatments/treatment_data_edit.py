@@ -21,6 +21,5 @@ with open(path + filename) as json_file:
             print('Token: ')
             token = input()
             p['token'] = int(token)
-            print(p)
     
     write_json(data)

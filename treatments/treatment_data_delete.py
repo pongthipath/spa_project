@@ -14,6 +14,5 @@ def delete_this_treatment(name):
         for p in data['TREATMENTS']:
             if(p['name'] == name):
                 data['TREATMENTS'].remove(p)
-                print(p)
     
         write_json(data)

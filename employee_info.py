@@ -13,8 +13,8 @@ def employee_info():
         old_name_em = name_em
         this_e_info = get_employee_some(old_name_em)
         for hp in this_e_info['hand_pay']:
-            for key, value in hp.items():
-                e_info_listbox.insert(END, str(key) + " : " + str(value))
+            data = str(hp['treatment']) + ":" + str(hp['amount'])
+            e_info_listbox.insert(END, data)
 
     def reset_handPay(name_em):
         reset_this_handPay(name_em)

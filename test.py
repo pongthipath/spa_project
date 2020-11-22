@@ -1,18 +1,56 @@
 import json
 import os
+import datetime
 
-path = os.path.abspath('../spa_project') + '/data/json/'
-filename = 'customer_info.json'
+td = datetime.datetime.today()
+now = datetime.datetime.now()
 
-def edit_treatment_customer_info(name, treatment):
+d = td.strftime("%d_%m_%Y")
+dt = now.strftime("%H:%M:%S")
+
+path = os.path.abspath('../spa_project') + '/data/history/'
+filename = d + '.json'
+
+def add_new_customer(fname, sname, id_c, employee, rooms, service_time, treatment):
     def write_json(data): 
         with open(path + filename,'w') as f: 
-            json.dump(data, f) 
+            json.dump(data, f)
 
-    with open(path + filename) as json_file:
-        data = json.load(json_file)
-        for p in data['CUSTOMERS']:
-            if(p['fname'] == name):
-                p['treatment'] = treatment
+    def init_json_file():
+        init_data = {
+            'HISTORY':[]
+        }
+        with open(path + filename, 'w') as outfile:
+            json.dump(init_data, outfile)
+
+    def update_data():
+        with open(path + filename) as json_file: 
+            data = json.load(json_file)
+
+            treatment_list = list()
+
+            for t in treatment:
+                treatment_list.append(t)
+
+            temp = data['CUSTOMERS'] 
+  
+            y = {
+                'time': dt,
+                'id': id_c,
+                'fname': fname,
+                'sname': sname,
+                'employee': employee,
+                'room': rooms,
+                'service_time': service_time,
+                'treatments': treatment_list
+            } 
     
+            temp.append(y)
         write_json(data)
+      
+    try:
+        update_data()
+
+    except FileNotFoundError:
+        init_json_file()
+        update_data()
