@@ -19,7 +19,7 @@ def get_customer_info_by_fname_list(name):
         for p in data['CUSTOMERS']:
             if(p['fname'] == name):
                 p_list.append(p)
-                return p_list
+        return p_list
 
 def get_customer_info_by_sname_list(name):
     with open(path + filename) as json_file:
@@ -28,7 +28,7 @@ def get_customer_info_by_sname_list(name):
         for p in data['CUSTOMERS']:
             if(p['sname'] == name):
                 p_list.append(p)
-                return p_list
+        return p_list
 
 def get_customer_info_by_id_list(name):
     with open(path + filename) as json_file:
@@ -37,7 +37,7 @@ def get_customer_info_by_id_list(name):
         for p in data['CUSTOMERS']:
             if(p['id'] == name):
                 p_list.append(p)
-                return p_list
+        return p_list
 
 def get_customer_info_by_id(id_c):
     with open(path + filename) as json_file:

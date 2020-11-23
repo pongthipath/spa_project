@@ -12,7 +12,9 @@ from add_treatment_customer import *
 from customer_service.customer_service_write import *
 from treatments.treatment_data_read import *
 from customer_use import *
+from history import *
 import datetime
+import time
 
 root = Tk()
 root.title("Spa!")
@@ -22,9 +24,6 @@ employee_list = list()
 treatment_list = list()
 
 # ++++++ All Function +++++++
-
-def see_history():
-    return
 
 def calculate_time_service(use_list):
     total = 0
@@ -37,7 +36,7 @@ def calculate_time_service(use_list):
 def add_service_history(fname, sname, id_c):
     add_history(fname, sname, id_c, employee_list, room_list, calculate_time_service(treatment_list), treatment_list)
 
-def increase_handpay():
+def increase_handpay(treatment_list_e):
     new_list = list()
     old_list = list()
     name_e = ''
@@ -47,7 +46,7 @@ def increase_handpay():
         if(e_db['name'] == name_e):
             for hp in e_db['hand_pay']:
                 old_list.append(hp)
-                for tl in treatment_list:
+                for tl in treatment_list_e:
                     if(hp['treatment'] == tl['treatment']):
                         temp = int(hp['amount']) + int(tl['amount'])
                         new_json = {
@@ -55,46 +54,176 @@ def increase_handpay():
                             'amount': str(temp)
                         }
                         new_list.append(new_json)
-                        treatment_list.remove(tl)
+                        treatment_list_e.remove(tl)
                         old_list.remove(hp)
     for cuso in old_list:
         new_list.append(cuso)
-    for cusn in treatment_list:
+    for cusn in treatment_list_e:
         new_list.append(cusn)
     increase_this_handPay(name_e, new_list)
     old_list.clear()
     new_list.clear()
 
-def customer_use(name):
-    member = True
+def check_list(name, treatment_list_c):
+    new_list = list()
+    old_list = list()
+    lack_list = list()
+    lack_box = False
+    for c_db in get_customer_info_all():
+        if(c_db['fname'] == name):
+            for tc in c_db['treatments']:
+                old_list.append(tc)
+                for tl in treatment_list_c:
+                    if(tc['treatment'] == tl['treatment']):
+                        if(tc['amount'] >= tl['amount']):
+                            temp = int(tc['amount']) - int(tl['amount'])
+                            new_json = {
+                                'treatment': tc['treatment'],
+                                'amount': str(temp)
+                            }
+                            new_list.append(new_json)
+                            treatment_list_c.remove(tl)
+                            old_list.remove(tc)
+                        else:
+                            temp_l = int(tl['amount']) - int(tc['amount'])
+                            data = tc['treatment'] + ':' + str(temp_l)
+                            lack_list.append(data)
+                            treatment_list_c.remove(tl)
+                            old_list.remove(tc)
+                            lack_box = True
+    data = {
+        'lack_box': lack_box,
+        'old_list': old_list,
+        'new_list': new_list,
+        'lack_list': lack_list,
+        'treatment_list_c': treatment_list_c
+    }
+    return data
+
+def decrease_treatment(name, treatment_list_c):
+    new_list = list()
+    old_list = list()
+    lack_list = list()
+    lack_box = False
+    data = check_list(name, treatment_list_c)
+    time.sleep(2)
+    lack_box = data['lack_box']
+    old_list = data['old_list']
+    new_list = data['new_list']
+    lack_list = data['lack_list']
+    treatment_list_c = data['treatment_list_c']
+    if(lack_box):
+        text_list = list()
+        for cc in get_customer_info_all():
+            if(cc['fname'] == name):
+                for ll in lack_list:
+                    text_lay = ll.split(':')
+                    new_json = {
+                        'treatment': text_lay[0],
+                        'amount': '0'
+                    }
+                    text_list.append(new_json)
+                text_lack = 'คุณ ' + cc['fname'] + ' ' + cc['sname'] + ' , ไอดี : '+ cc['id'] + ' เหลือทรีทเม้นท์ไม่เพียงพอขาด\n' + str(lack_list) + '\nต้องการทำรายการต่อใช่หรือไม่?'
+                msgbox = messagebox.askquestion('ไม่เพียงพอ', text_lack)
+                if(msgbox == 'yes'):
+                    for dc in text_list:
+                        new_list.append(dc)
+                        lack_box = False
+                        return True
+                else:
+                    lack_box = False
+                    return False
+    for cuso in old_list:
+        new_list.append(cuso)
+    for cusn in treatment_list_c:
+        new_list.append(cusn)
+    edit_treatment_customer_info_by_name(name, new_list)
+    old_list.clear()
+    new_list.clear()
+
+def search_n(name):
+    name_c = ''
     for n in get_customer_info_all():
         if(name == n['fname']):
+            name_c = n['fname']
             msgBox = messagebox.askquestion('ยืนยันลูกค้า', 'คุณ ' + n['fname'] + ' ' + n['sname'] + ' , ไอดี : '+ n['id'] + ' กำลังจะใช้บริการใช่หรือไม่?')
             if(msgBox == 'yes'):
-                c_data = get_customer_info_by_name(name)
-                add_service_history(c_data['fname'], c_data['sname'], c_data['id'])
-                increase_handpay()
-                messagebox.showinfo('เรียบร้อย!', 'เพิ่มการใช้บริการแล้ว')
+                c_data = get_customer_info_by_name(n['fname'])
+                status_msg = decrease_treatment(n['fname'], treatment_list)
                 member = False
+                not_member(name_c, member)
+                if(status_msg):
+                    add_service_history(c_data['fname'], c_data['sname'], c_data['id'])
+                    increase_handpay(treatment_list)
+                    messagebox.showinfo('เรียบร้อย!', 'เพิ่มการใช้บริการแล้ว!')
+                    amount_entry.delete(0, END)
+                    room_list.clear()
+                    employee_list.clear()
+                    treatment_list.clear()
+                    r_info_listbox.delete(0, END)
+                    e_info_listbox.delete(0, END)
+                    t_info_listbox.delete(0, END)
+                else:
+                    messagebox.showinfo('ยกเลิก!', 'ยกเลิกการใช้บริการแล้ว!')
             else:
                 return
+        else:
+            member = True
+            not_member(name, member)
+            return
+
+def not_member(name, member):
     if(member):
-        msgBox = messagebox.askquestion('ยืนยันลูกค้า', 'คุณ ' + name + ' กำลังจะใช้บริการใช่หรือไม่?')
+        msgBox = messagebox.askquestion('ยืนยันลูกค้า', 'คุณ ' + str(name) + ' กำลังจะใช้บริการใช่หรือไม่?')
         if(msgBox == 'yes'):
-            c_data = get_customer_info_by_name(name)
             add_service_history(name, '', '')
-            increase_handpay()
-            messagebox.showinfo('เรียบร้อย!', 'เพิ่มการใช้บริการแล้ว')
+            increase_handpay(treatment_list)
+            messagebox.showinfo('เรียบร้อย!', 'เพิ่มการใช้บริการแล้ว!')
             member = False
+            amount_entry.delete(0, END)
+            room_list.clear()
+            employee_list.clear()
+            treatment_list.clear()
+            r_info_listbox.delete(0, END)
+            e_info_listbox.delete(0, END)
+            t_info_listbox.delete(0, END)
         else:
             return
-    amount_entry.delete(0, END)
-    room_list.clear()
-    employee_list.clear()
-    treatment_list.clear()
-    r_info_listbox.delete(0, END)
-    e_info_listbox.delete(0, END)
-    t_info_listbox.delete(0, END)
+
+def search_id(id_c):
+    for n in get_customer_info_all():
+        if(id_c == n['id']):
+            msgBox = messagebox.askquestion('ยืนยันลูกค้า', 'คุณ ' + n['fname'] + ' ' + n['sname'] + ' , ไอดี : '+ n['id'] + ' กำลังจะใช้บริการใช่หรือไม่?')
+            if(msgBox == 'yes'):
+                c_data = get_customer_info_by_id(n['id'])
+                status_msg = decrease_treatment(n['fname'], treatment_list)
+                if(status_msg):
+                    add_service_history(c_data['fname'], c_data['sname'], c_data['id'])
+                    increase_handpay(treatment_list)
+                    messagebox.showinfo('เรียบร้อย!', 'เพิ่มการใช้บริการแล้ว!')
+                    amount_entry.delete(0, END)
+                    room_list.clear()
+                    employee_list.clear()
+                    treatment_list.clear()
+                    r_info_listbox.delete(0, END)
+                    e_info_listbox.delete(0, END)
+                    t_info_listbox.delete(0, END)
+                else:
+                    messagebox.showinfo('ยกเลิก!', 'ยกเลิกการใช้บริการแล้ว!')
+            else:
+                return
+        else:
+            cannot_find = True
+    if(cannot_find):
+        messagebox.showinfo('ยกเลิก!', 'ไม่พบไอดีที่ค้นหา!')
+
+def customer_use(data, request):
+    if(request == 'ค้นหาโดย..'):
+        messagebox.showinfo('ผิดพลาด!', 'กรุณาใส่การค้นหา!')
+    if(request == 'ชื่อ'):
+        search_n(data)
+    if(request == 'ไอดี'):
+        search_id(data)
 
 def select_room_use(room_selected):
     room_list.append(room_selected)
@@ -162,13 +291,14 @@ date_label.grid(row=0, column=0, columnspan=3, padx=5)
 service_frame = LabelFrame(root, text="ลูกค้าใช้บริการ")
 service_frame.grid(row=1, column=0, columnspan=3, padx=10, pady=10)
 
-c_name = Entry(service_frame, width=30)
-c_name.grid(row=0, column=1, padx=20, pady=5)
+c_name_service_entry = Entry(service_frame, width=30)
+c_name_service_entry.grid(row=0, column=1, padx=20, pady=5)
 
-c_name_label = Label(service_frame, text="ชื่อลูกค้า")
-c_name_label.grid(row=0, column=0)
+search_c_drop = ttk.Combobox(service_frame, value=["ค้นหาโดย..", "ชื่อ", "ไอดี"])
+search_c_drop.current(0)
+search_c_drop.grid(row=0, column=0, padx=5, pady=5)
 
-customer_use_btn = Button(service_frame, text="ใช้บริการ", command=lambda: customer_use(c_name.get()), padx=30, pady=5)
+customer_use_btn = Button(service_frame, text="ใช้บริการ", padx=30, pady=5, command=lambda: customer_use(c_name_service_entry.get(), search_c_drop.get()))
 customer_use_btn.grid(row=3, column=0, columnspan=3, padx=5, pady=5)
 
 room_frame = LabelFrame(service_frame, text="ห้อง",)
@@ -185,19 +315,26 @@ status_r_1.grid(row=0, column=0)
 status_r_2 = Label(room_frame, text="ใช้")
 status_r_2.grid(row=0, column=2)
 
-all_name_r_listbox = Listbox(room_frame)
-all_name_r_listbox.grid(row=1, column=0, padx=20, pady=5)
-r_info_listbox = Listbox(room_frame)
-r_info_listbox.grid(row=1, column=2, padx=20, pady=5)
+r_scrollbar_1 = Scrollbar(room_frame, orient=VERTICAL)
+r_scrollbar_2 = Scrollbar(room_frame, orient=VERTICAL)
+
+all_name_r_listbox = Listbox(room_frame, yscrollcommand=r_scrollbar_1.set)
+r_scrollbar_1.config(command=all_name_r_listbox.yview)
+r_scrollbar_1.grid(row=1, column=1, sticky='nwes')
+all_name_r_listbox.grid(row=1, column=0, pady=5)
+r_info_listbox = Listbox(room_frame, yscrollcommand=r_scrollbar_2.set)
+r_scrollbar_2.config(command=all_name_r_listbox.yview)
+r_scrollbar_2.grid(row=1, column=4, sticky='nwes')
+r_info_listbox.grid(row=1, column=3, pady=5)
 
 all_name_r = get_room_all_name()
 for name in all_name_r:
     all_name_r_listbox.insert(END, name)
 
 select_r = Button(room_frame, text=">>", command=lambda: select_room_use(all_name_r_listbox.get(ANCHOR)))
-select_r.grid(row=1, column=1, padx=5, pady=5)
+select_r.grid(row=1, column=2, padx=5, pady=5)
 remove_r = Button(room_frame, text="ลบ", command=lambda: remove_room_out(r_info_listbox.get(ANCHOR)))
-remove_r.grid(row=2, column=1, padx=5, pady=5)
+remove_r.grid(row=2, column=2, padx=5, pady=5)
 
 # ++++++ employee service +++++++
 
@@ -206,19 +343,26 @@ status_e_1.grid(row=0, column=0)
 status_e_2 = Label(employee_frame, text="ใช้")
 status_e_2.grid(row=0, column=2)
 
-all_name_e_listbox = Listbox(employee_frame)
-all_name_e_listbox.grid(row=1, column=0, padx=20, pady=5)
-e_info_listbox = Listbox(employee_frame)
-e_info_listbox.grid(row=1, column=2, padx=20, pady=5)
+e_scrollbar_1 = Scrollbar(employee_frame, orient=VERTICAL)
+e_scrollbar_2 = Scrollbar(employee_frame, orient=VERTICAL)
+
+all_name_e_listbox = Listbox(employee_frame, yscrollcommand=e_scrollbar_1.set)
+e_scrollbar_1.config(command=all_name_e_listbox.yview)
+e_scrollbar_1.grid(row=1, column=1, sticky='nwes')
+all_name_e_listbox.grid(row=1, column=0, pady=5)
+e_info_listbox = Listbox(employee_frame, yscrollcommand=e_scrollbar_2.set)
+e_scrollbar_2.config(command=e_info_listbox.yview)
+e_scrollbar_2.grid(row=1, column=4, sticky='nwes')
+e_info_listbox.grid(row=1, column=3, pady=5)
 
 all_name_e = get_employee_all_name()
 for name in all_name_e:
     all_name_e_listbox.insert(END, name)
 
 select_e = Button(employee_frame, text=">>", command=lambda: select_employee_use(all_name_e_listbox.get(ANCHOR)))
-select_e.grid(row=1, column=1, padx=5, pady=5)
+select_e.grid(row=1, column=2, padx=5, pady=5)
 remove_e = Button(employee_frame, text="ลบ", command=lambda: remove_employee_out(e_info_listbox.get(ANCHOR)))
-remove_e.grid(row=2, column=1, padx=5, pady=5)
+remove_e.grid(row=2, column=2, padx=5, pady=5)
 
 # ++++++ treatment service +++++++
 
@@ -227,23 +371,30 @@ status_t_1.grid(row=0, column=0)
 status_t_2 = Label(treatment_frame, text="ใช้")
 status_t_2.grid(row=0, column=2)
 
-all_name_t_listbox = Listbox(treatment_frame)
-all_name_t_listbox.grid(row=1, column=0, padx=20, pady=5)
-t_info_listbox = Listbox(treatment_frame)
-t_info_listbox.grid(row=1, column=2, padx=20, pady=5)
+t_scrollbar_1 = Scrollbar(treatment_frame, orient=VERTICAL)
+t_scrollbar_2 = Scrollbar(treatment_frame, orient=VERTICAL)
+
+all_name_t_listbox = Listbox(treatment_frame, yscrollcommand=t_scrollbar_1.set)
+t_scrollbar_1.config(command=all_name_t_listbox.yview)
+t_scrollbar_1.grid(row=1, column=1, sticky='nwes')
+all_name_t_listbox.grid(row=1, column=0, pady=5)
+t_info_listbox = Listbox(treatment_frame, yscrollcommand=t_scrollbar_2.set)
+t_scrollbar_2.config(command=t_info_listbox.yview)
+t_scrollbar_2.grid(row=1, column=4, sticky='nwes')
+t_info_listbox.grid(row=1, column=3, pady=5)
 
 all_name_t = get_treatment_all_name()
 for name in all_name_t:
     all_name_t_listbox.insert(END, name)
 
 select_t = Button(treatment_frame, text=">>", command=lambda: select_treatment_use(all_name_t_listbox.get(ANCHOR), amount_entry.get()))
-select_t.grid(row=1, column=1, padx=5, pady=5)
+select_t.grid(row=1, column=2, padx=5, pady=5)
 amount_label = Label(treatment_frame, text="จำนวน: ")
 amount_label.grid(row=2, column=0, padx=5, pady=5)
 amount_entry = Entry(treatment_frame, width=5)
 amount_entry.grid(row=2, column=1, columnspan=3, padx=5, pady=5)
 remove_t = Button(treatment_frame, text="ลบ", command=lambda: remove_treatment_out(t_info_listbox.get(ANCHOR)))
-remove_t.grid(row=3, column=1, padx=5, pady=5)
+remove_t.grid(row=3, column=2, padx=5, pady=5)
 
 # ++++++ Check employees +++++++
 
@@ -266,7 +417,7 @@ menu_frame.grid(row=2, column=0, padx=10, pady=10)
 add_customer_btn = Button(menu_frame, text="เพิ่มลูกค้า", command=add_customer)
 add_customer_btn.grid(row=1, column=0, padx=5, pady=5)
 
-see_history_btn = Button(menu_frame, text="ประวัติลูกค้า", command=see_history)
+see_history_btn = Button(menu_frame, text="ประวัติลูกค้า", command=history)
 see_history_btn.grid(row=1, column=1, padx=5, pady=5)
 
 add_promotion_btn = Button(menu_frame, text="เพิ่มทรีทเม้นท์ลูกค้า", command=add_treatment_customer)

@@ -1,56 +1,28 @@
-import json
-import os
-import datetime
+import tkinter as tk
+from tkinter import ttk
 
-td = datetime.datetime.today()
-now = datetime.datetime.now()
+root = tk.Tk()
+container = ttk.Frame(root)
+canvas = tk.Canvas(container)
+scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
+scrollable_frame = ttk.Frame(canvas)
 
-d = td.strftime("%d_%m_%Y")
-dt = now.strftime("%H:%M:%S")
+scrollable_frame.bind(
+    "<Configure>",
+    lambda e: canvas.configure(
+        scrollregion=canvas.bbox("all")
+    )
+)
 
-path = os.path.abspath('../spa_project') + '/data/history/'
-filename = d + '.json'
+canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
 
-def add_new_customer(fname, sname, id_c, employee, rooms, service_time, treatment):
-    def write_json(data): 
-        with open(path + filename,'w') as f: 
-            json.dump(data, f)
+canvas.configure(yscrollcommand=scrollbar.set)
 
-    def init_json_file():
-        init_data = {
-            'HISTORY':[]
-        }
-        with open(path + filename, 'w') as outfile:
-            json.dump(init_data, outfile)
+for i in range(50):
+    ttk.Label(scrollable_frame, text="Sample scrolling label").pack()
 
-    def update_data():
-        with open(path + filename) as json_file: 
-            data = json.load(json_file)
+container.pack()
+canvas.pack(side="left", fill="both", expand=True)
+scrollbar.pack(side="right", fill="y")
 
-            treatment_list = list()
-
-            for t in treatment:
-                treatment_list.append(t)
-
-            temp = data['CUSTOMERS'] 
-  
-            y = {
-                'time': dt,
-                'id': id_c,
-                'fname': fname,
-                'sname': sname,
-                'employee': employee,
-                'room': rooms,
-                'service_time': service_time,
-                'treatments': treatment_list
-            } 
-    
-            temp.append(y)
-        write_json(data)
-      
-    try:
-        update_data()
-
-    except FileNotFoundError:
-        init_json_file()
-        update_data()
+root.mainloop()

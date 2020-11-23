@@ -14,8 +14,9 @@ def add_treatment_customer():
 
     def search_by(request, data):
         all_data_list = list()
-        if(request == "ค้นหาโดย..."):
-            status_label.config(text="กรุณาใส่การค้าหา!")
+        if(request == "ทั้งหมด"):
+            all_data_list = get_customer_info_all()
+            status_label.config(text="ค้นหาทั้งหมด!")
         if(request == "ชื่อ"):
             all_data_list = get_customer_info_by_fname_list(data)
             status_label.config(text="ค้าหาโดยชื่อสำเร็จ!")
@@ -96,7 +97,7 @@ def add_treatment_customer():
         t_info_listbox.delete(0, END)
         status_label.config(text="เพิ่มทรีทเม้นท์ของ " + data + " เรียบร้อยแล้ว")
 
-    search_customer_drop = ttk.Combobox(treatment_add_window, value=["ค้าหาโดย...", "ชื่อ", "นามสกุล", "ไอดี"])
+    search_customer_drop = ttk.Combobox(treatment_add_window, value=["ทั้งหมด", "ชื่อ", "นามสกุล", "ไอดี"])
     search_customer_drop.current(0)
     search_customer_drop.grid(row=0, column=0, padx=5, pady=5)
 
