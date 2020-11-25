@@ -1,5 +1,6 @@
 from tkinter import *
 from datetime import *
+from tkinter import messagebox
 from treatments.treatments_data_write import *
 from treatments.treatment_data_read import *
 from treatments.treatment_data_delete import *
@@ -9,17 +10,20 @@ def treatment_add():
     treatment_add_window.title("Spa - เพิ่มทรีทเม้นท์!")
 
     def delete_treatment(name_e):
-        delete_this_treatment(name_e)
-        status_label.config(text=str(name_e) + " ถูกลบแล้ว!")
-        all_name_e_listbox.delete(0, END)
-        all_name_e = get_treatment_all()
-        for t in all_name_e:
-            data = str(t['name']) + " | " + str(t['duration']) + " | " + str(t['token'])
-            all_name_e_listbox.insert(END, data)
+        msgBox = messagebox.askquestion('ยืนยันการลบข้อมูล', 'ต้องการลบทรีทเม้นท์ ' + name_e + ' ใช่หรือไม่?')
+        if(msgBox == 'yes'):
+            delete_this_treatment(name_e)
+            all_name_e_listbox.delete(0, END)
+            all_name_e = get_treatment_all()
+            for t in all_name_e:
+                data = str(t['name']) + " | " + str(t['duration']) + " | " + str(t['token'])
+                all_name_e_listbox.insert(END, data)
+        else:
+            messagebox.showinfo('ยกเลิก!', 'ยกเลิกการลบข้อมูล!')
 
     def add_treatment(name_e, t_duration, t_hand_pay):
         add_new_treatment(name_e, t_duration, t_hand_pay)
-        status_label.config(text=str(name_e) + " ถูกเพิ่มแล้ว!")
+        messagebox.showinfo('เพิ่มทรีทเม้นท์!', 'เพิ่มทรีทเม้นท์ ' + name_e + ' แล้ว!')
         all_name_e_listbox.delete(0, END)
         all_name_e = get_treatment_all()
         for t in all_name_e:
@@ -38,8 +42,6 @@ def treatment_add():
     hand_pay_label.grid(row=2, column=0, padx=20, pady=5)
     hand_pay_t = Entry(treatment_add_window, width=30)
     hand_pay_t.grid(row=2, column=1, padx=20, pady=5)
-    status_label = Label(treatment_add_window, text="")
-    status_label.grid(row=4, column=2, columnspan=3, padx=20, pady=5)
 
     add_e_button = Button(treatment_add_window, text="เพิ่มทรีทเม้นท์", command=lambda: add_treatment(e_name.get(), duration_t.get(), hand_pay_t.get()))
     add_e_button.grid(row=1, column=2, padx=20, pady=5)
@@ -47,7 +49,7 @@ def treatment_add():
     name_label = Label(treatment_add_window, text="ชื่อ  |  ระยะเวลา  | ค่ามือหมอ")
     name_label.grid(row=3, column=0, columnspan=2, padx=20, pady=5)
 
-    all_name_e_listbox = Listbox(treatment_add_window)
+    all_name_e_listbox = Listbox(treatment_add_window, exportselection=False)
     all_name_e_listbox.grid(row=4, column=0, columnspan=2, padx=20, pady=5)
 
     all_name_e = get_treatment_all()

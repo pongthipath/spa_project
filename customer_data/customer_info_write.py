@@ -4,7 +4,7 @@ import os
 path = os.path.abspath('../spa_project') + '/data/json/'
 filename = 'customer_info.json'
 
-def add_new_customer(fname, sname, id_c, treatment):
+def add_new_customer(fname, sname, id_c, member,treatment):
     def write_json(data): 
         with open(path + filename,'w') as f: 
             json.dump(data, f)
@@ -39,6 +39,7 @@ def add_new_customer(fname, sname, id_c, treatment):
                 'fname': fname,
                 'sname': sname,
                 'id': id_c,
+                'member': member,
                 'treatments': treatment_list
             } 
     

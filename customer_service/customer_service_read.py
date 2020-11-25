@@ -10,6 +10,15 @@ def get_customer_service_info_by_name(name, d):
             if(p['fname'] == name):
                 return p
 
+def get_customer_service_info_by_seq(name, d):
+    path = os.path.abspath('../spa_project') + '/data/history/'
+    filename = d + '.json'
+    with open(path + filename) as json_file:
+        data = json.load(json_file)
+        for p in data['HISTORY']:
+            if(p['seq'] == name):
+                return p
+
 def get_customer_service_info_by_fname_list(name, d):
     path = os.path.abspath('../spa_project') + '/data/history/'
     filename = d + '.json'

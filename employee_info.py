@@ -1,7 +1,9 @@
 from tkinter import *
 from datetime import *
+from tkinter import messagebox
 from employee_data.employee_data_read import *
 from employee_data.employee_data_edit import *
+from treatments.treatment_data_read import *
 import add_employee
 
 def employee_info():
@@ -17,15 +19,19 @@ def employee_info():
             e_info_listbox.insert(END, data)
 
     def reset_handPay(name_em):
-        reset_this_handPay(name_em)
-        status_label.config(text= "ค่ามือหมอของ " + name_em + " ถูกรีเซ็ตแล้ว!")
+        this_t_list = list()
+        for t in get_treatment_all_name():
+            json_t ={
+                'treatment': t,
+                'amount': '0'
+            }
+            this_t_list.append(json_t)
+        reset_this_handPay(name_em, this_t_list)
+        messagebox.showinfo('รีเซ็ตค่ามือหมอ!', 'ค่ามือหมอของ ' + name_em + ' ถูกรีเซ็ตแล้ว!')
 
-
-    status_label = Label(employee_info_window, text="")
-    status_label.grid(row=0, column=0, columnspan=3, padx=20, pady=5)
     e_info_listbox = Listbox(employee_info_window)
     e_info_listbox.grid(row=1, column=1, padx=20, pady=5)
-    all_name_e_listbox = Listbox(employee_info_window)
+    all_name_e_listbox = Listbox(employee_info_window, exportselection=False)
     all_name_e_listbox.grid(row=1, column=0, padx=20, pady=5)
 
     all_name_e = get_employee_all_name()

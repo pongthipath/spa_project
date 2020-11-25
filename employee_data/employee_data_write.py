@@ -4,7 +4,7 @@ import os
 path = os.path.abspath('../spa_project') + '/data/json/'
 filename = 'employees.json'
 
-def add_new_employee(name):
+def add_new_employee(name, treatment):
     
 
     print(name)
@@ -28,7 +28,7 @@ def add_new_employee(name):
   
             y = {
                 'name': str(name),
-                'hand_pay':[]
+                'hand_pay':treatment
             } 
     
             temp.append(y)

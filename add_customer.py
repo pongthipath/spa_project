@@ -2,16 +2,34 @@ from tkinter import *
 from treatments.treatment_data_read import *
 from customer_data.customer_info_write import *
 
-treatment_list = list()
 
 def add_customer():
     add_customer_window = Toplevel()
     add_customer_window.title("Spa - เพิ่มลูกค้า!")
 
+    treatment_list = list()
+
     def add_customer_to_db(fname, sname, id_c, treatment):
-        status_to_db = add_new_customer(fname, sname, id_c, treatment_list)
+        this_t_list = list()
+        for t in get_treatment_all_name():
+            json_t ={
+                'treatment': t,
+                'amount': '0'
+            }
+            this_t_list.append(json_t)
+        for tr in this_t_list:
+            for nt in treatment_list:
+                if(tr['treatment'] == nt['treatment']):
+                    this_t_list.remove(tr)
+                    this_t_list.append(nt)
+        status_to_db = add_new_customer(fname, sname, id_c, True, this_t_list)
         status_label.config(text=status_to_db)
-        print(status_to_db)
+        c_name.delete(0, END)
+        s_name.delete(0, END)
+        id_entry.delete(0, END)
+        t_info_listbox.delete(0, END)
+        amount_entry.delete(0, END)
+        treatment_list.clear()
 
     def select_treatment_use(treatment_selected, amount):
         if(amount == ''):
@@ -28,7 +46,6 @@ def add_customer():
         for name in treatment_list:
             show_name = name['treatment'] + ":" + name['amount']
             t_info_listbox.insert(END, show_name)
-        print(treatment_list)
 
 
     def remove_treatment_out(treatment_select):
@@ -40,7 +57,8 @@ def add_customer():
         treatment_list.remove(this_treatment)
         t_info_listbox.delete(0, END)
         for name in treatment_list:
-            t_info_listbox.insert(END, name)
+            show_name = name['treatment'] + ":" + name['amount']
+            t_info_listbox.insert(END, show_name)
         print(treatment_list)
 
     c_name_label = Label(add_customer_window, text="ชื่อ")
@@ -65,7 +83,7 @@ def add_customer():
     status_t_2 = Label(add_treatment_frame, text="ใช้")
     status_t_2.grid(row=0, column=2)
 
-    all_name_t_listbox = Listbox(add_treatment_frame)
+    all_name_t_listbox = Listbox(add_treatment_frame, exportselection=False)
     all_name_t_listbox.grid(row=1, column=0, padx=20, pady=5)
     t_info_listbox = Listbox(add_treatment_frame)
     t_info_listbox.grid(row=1, column=2, padx=20, pady=5)

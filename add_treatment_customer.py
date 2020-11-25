@@ -1,33 +1,30 @@
 from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox
 from datetime import *
 import time
 from customer_data.customer_info_read import *
 from treatments.treatment_data_read import *
 from customer_data.customer_info_edit import *
 
-treatment_list = list()
-
 def add_treatment_customer():
     treatment_add_window = Toplevel()
     treatment_add_window.title("Spa - เพิ่มทรีทเม้นท์ลูกค้า!")
+
+    treatment_list = list()
 
     def search_by(request, data):
         all_data_list = list()
         if(request == "ทั้งหมด"):
             all_data_list = get_customer_info_all()
-            status_label.config(text="ค้นหาทั้งหมด!")
         if(request == "ชื่อ"):
             all_data_list = get_customer_info_by_fname_list(data)
-            status_label.config(text="ค้าหาโดยชื่อสำเร็จ!")
         if(request == "นามสกุล"):
             all_data_list = get_customer_info_by_sname_list(data)
-            status_label.config(text="ค้าหาโดยนามสกุลสำเร็จ!")
         if(request == "ไอดี"):
             all_data_list = get_customer_info_by_id_list(data)
-            status_label.config(text="ค้าหาโดยไอดีสำเร็จ!")
         if(all_data_list == None or all_data_list == []):
-            status_label.config(text="ไม่พบข้อมูล!")
+            messagebox.showerror('ไม่พบข้อมูล!', 'ไม่พบข้อมูล!')
         all_name_c_listbox.delete(0, END)
         for name in all_data_list:
             data_in = name['fname'] + " " + name['sname'] + " " + str(name['id'])
@@ -38,7 +35,7 @@ def add_treatment_customer():
         all_t_listbox.delete(0, END)
         all_name_c = get_customer_info_by_id(data_list[2])
         for name in all_name_c['treatments']:
-            data_in = name['treatment'] + ":" + name["amount"]
+            data_in = name['treatment'] + ":" + name['amount']
             all_t_listbox.insert(END, data_in)
 
     def select_treatment_use(treatment_selected, amount):
@@ -71,31 +68,39 @@ def add_treatment_customer():
 
     def add_treatment_to_c(data):
         if(data == None): 
-            status_label.config(text="โปรดเลือกลูกค้า!")
-        data_in = data.split(" ")
-        new_list = list()
-        old_list = list()
-        get_c = get_customer_info_by_id(data_in[2])
-        for i_db in get_c['treatments']:
-            old_list.append(i_db)
-            for c in treatment_list:
-                if(c['treatment'] == i_db['treatment']):
-                    temp = int(c['amount']) + int(i_db['amount'])
-                    new_json = {
-                        'treatment': i_db['treatment'],
-                        'amount': str(temp)
-                    }
-                    new_list.append(new_json)
-                    treatment_list.remove(c)
-                    old_list.remove(i_db)
-        for cuso in old_list:
-            new_list.append(cuso)
-        for cusn in treatment_list:
-            new_list.append(cusn)
-        edit_treatment_customer_info_by_id(data_in[2], new_list)
-        treatment_list.clear()
-        t_info_listbox.delete(0, END)
-        status_label.config(text="เพิ่มทรีทเม้นท์ของ " + data + " เรียบร้อยแล้ว")
+            messagebox.showinfo('โปรดเลือกลูกค้า!', 'โปรดเลือกลูกค้า!')
+        t_list = list()
+        for name in treatment_list:
+            show_name = name['treatment'] + ":" + name['amount']
+            t_list.append(show_name)
+        msgBox = messagebox.askquestion('ยืนยันการเพิ่มทรีทเม้นท์', 'ต้องการเพิ่มทรีทเม้นท์ ' + str(t_list) + ' ของคุณ ' + data + ' ใช่หรือไม่?')
+        if(msgBox == 'yes'):
+            data_in = data.split(" ")
+            new_list = list()
+            old_list = list()
+            get_c = get_customer_info_by_id(data_in[2])
+            for i_db in get_c['treatments']:
+                old_list.append(i_db)
+                for c in treatment_list:
+                    if(c['treatment'] == i_db['treatment']):
+                        temp = int(c['amount']) + int(i_db['amount'])
+                        new_json = {
+                            'treatment': i_db['treatment'],
+                            'amount': str(temp)
+                        }
+                        new_list.append(new_json)
+                        treatment_list.remove(c)
+                        old_list.remove(i_db)
+            for cuso in old_list:
+                new_list.append(cuso)
+            for cusn in treatment_list:
+                new_list.append(cusn)
+            edit_treatment_customer_info_by_id(data_in[2], new_list)
+            treatment_list.clear()
+            t_info_listbox.delete(0, END)
+            messagebox.showinfo('เพิ่มทรีทเม้นท์!', 'เพิ่มทรีทเม้นท์แล้ว!')
+        else:
+            messagebox.showinfo('ยกเลิก!', 'ยกเลิกการเพิ่มทรีทเม้นท์แล้ว!')
 
     search_customer_drop = ttk.Combobox(treatment_add_window, value=["ทั้งหมด", "ชื่อ", "นามสกุล", "ไอดี"])
     search_customer_drop.current(0)
@@ -150,5 +155,3 @@ def add_treatment_customer():
     add_treatment_button = Button(treatment_add_window, text="เพิ่มทรีทเม้นท์", command=lambda: add_treatment_to_c(all_name_c_listbox.get(ANCHOR)))
     add_treatment_button.grid(row=4, column=0, columnspan=3, padx=5, pady=5)
     
-    status_label = Label(treatment_add_window, text="")
-    status_label.grid(row=5, column=0, columnspan=3, padx=20, pady=5)

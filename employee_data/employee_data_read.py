@@ -22,9 +22,7 @@ def get_employee_all_name():
         return name_list
 
 def get_employee_all():
-    print('test')
 
     with open(path + filename) as json_file:
         data = json.load(json_file)
-        print(data['EMPLOYEES'])
         return data['EMPLOYEES']

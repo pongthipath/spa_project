@@ -11,7 +11,7 @@ dt = now.strftime("%H:%M:%S")
 path = os.path.abspath('../spa_project') + '/data/history/'
 filename = d + '.json'
 
-def add_history(fname, sname, id_c, employee, rooms, service_time, treatment):
+def add_history(fname, sname, id_c, member, employee, rooms, service_time, treatment):
     def write_json(data): 
         with open(path + filename,'w') as f: 
             json.dump(data, f)
@@ -35,10 +35,12 @@ def add_history(fname, sname, id_c, employee, rooms, service_time, treatment):
             temp = data['HISTORY'] 
   
             y = {
+                'seq': str(len(temp)+1),
                 'time': dt,
                 'id': id_c,
                 'fname': fname,
                 'sname': sname,
+                'member': member,
                 'employee': employee,
                 'room': rooms,
                 'service_time': service_time,
