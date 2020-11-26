@@ -162,6 +162,7 @@ def history():
     search_c_drop = ttk.Combobox(history_window, value=["ทั้งหมด", "ชื่อ", "นามสกุล", "ไอดี", "ลำดับ"])
 <<<<<<< HEAD
     search_c_drop.current(0)
+
     search_c_drop.grid(row=1, column=0, columnspan=3, padx=5, pady=5)
 
     add_r_button = Button(history_window, text="ค้นหา", command=lambda: search_history(search_c_drop.get(), filename_drop.get(), data_entry.get()))
