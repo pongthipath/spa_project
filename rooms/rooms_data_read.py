@@ -4,8 +4,6 @@ import os
 path = os.path.abspath('../spa_project') + '/data/json/'
 filename = 'rooms.json'
 
-print(path)
-
 def get_room_some(name):
     with open(path + filename) as json_file:
         data = json.load(json_file)

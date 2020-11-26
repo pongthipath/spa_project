@@ -5,8 +5,6 @@ import os
 path = os.path.abspath('../spa_project') + '/data/json/'
 filename = 'rooms.json'
 
-print(path)
-
 def add_new_room(name):
     def write_json(data): 
         with open(path + filename,'w') as f: 

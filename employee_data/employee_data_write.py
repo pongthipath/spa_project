@@ -6,8 +6,6 @@ filename = 'employees.json'
 
 def add_new_employee(name, treatment):
     
-
-    print(name)
     # function to add to JSON 
     def write_json(data): 
         with open(path + filename,'w') as f: 
