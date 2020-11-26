@@ -148,10 +148,13 @@ def select_room_use(room_selected):
         r_info_listbox.insert(END, name)
 
 def select_employee_use(employee_selected):
-    employee_list.append(employee_selected)
-    e_info_listbox.delete(0, END)
-    for name in employee_list:
-        e_info_listbox.insert(END, name)
+    if(employee_list == []):
+        employee_list.append(employee_selected)
+        e_info_listbox.delete(0, END)
+        for name in employee_list:
+            e_info_listbox.insert(END, name)
+    else:
+        return
 
 def select_treatment_use(treatment_selected, amount):
     if(amount == ''):

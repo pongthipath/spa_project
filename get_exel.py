@@ -23,14 +23,14 @@ def get_exel_file(filename):
     for data in get_customer_service_info_all(filename):
         member = ''
         t_list = list()
+        r_list = list()
         if(data['member'] == True):
             member = 'เป็น'
         if(data['member'] == False):
             member = 'ไม่เป็น'
         for e in data['employee']:
             employee = e
-        for r in data['room']:
-            room = r
+        r_list = data['room']
         for t in data['treatments']:
             show_t = str(t['treatment']) + ':' + str(t['amount'])
             t_list.append(show_t)
@@ -42,7 +42,7 @@ def get_exel_file(filename):
         worksheet.write('F' + str(count+1), member)
         worksheet.write('G' + str(count+1), data['service_time'])
         worksheet.write('H' + str(count+1), employee)
-        worksheet.write('I' + str(count+1), room)
+        worksheet.write('I' + str(count+1), str(r_list))
         worksheet.write('J' + str(count+1), str(t_list))
         count += 1
 
