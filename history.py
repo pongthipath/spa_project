@@ -7,7 +7,9 @@ from customer_service.customer_service_delete import *
 from customer_service.customer_service_edit import *
 from employee_data.employee_data_edit import *
 from customer_data.customer_info_edit import *
-import os, fnmatch
+from tkinter.filedialog import asksaveasfile
+from get_exel import *
+import os, fnmatch, sys
 import time
 
 path = os.path.abspath('../spa_project') + '/data/history/'
@@ -17,6 +19,8 @@ width_en = 30
 def history():
     history_window = Toplevel()
     history_window.title("Spa - ประวัติการใช้บริการ!")
+
+    today = datetime.today()
 
     filename_list = list()
 
@@ -135,6 +139,10 @@ def history():
                 e.insert(END, r_data_list[i][j])
                 e.configure(state='disabled')
 
+    def get_exel_file_f(filename):
+        get_exel_file(filename)
+        messagebox.showinfo('ดาวโหลด!', 'ดาวโหลดไฟล์Excelแล้ว!')
+
     listOfFiles = os.listdir(path)
     pattern = "*.json"
     for entry in reversed(listOfFiles):
@@ -143,26 +151,29 @@ def history():
                 filename_list.append(day[0])
 
     filename_label = Label(history_window, text="เลือกวันที่")
-    filename_label.grid(row=1, column=0, padx=5, pady=5)
+    filename_label.grid(row=0, column=0, columnspan=3, padx=5, pady=5)
     filename_drop = ttk.Combobox(history_window, value=filename_list)
     filename_drop.current(0)
-    filename_drop.grid(row=1, column=1, padx=5, pady=5)
+    filename_drop.grid(row=0, column=1, columnspan=3, padx=5, pady=5)
 
     data_entry = Entry(history_window, width=30)
-    data_entry.grid(row=0, column=1, padx=5, pady=5)
+    data_entry.grid(row=1, column=1, columnspan=3, padx=5, pady=5)
 
     search_c_drop = ttk.Combobox(history_window, value=["ทั้งหมด", "ชื่อ", "นามสกุล", "ไอดี", "ลำดับ"])
     search_c_drop.current(0)
-    search_c_drop.grid(row=0, column=0, padx=5, pady=5)
+    search_c_drop.grid(row=1, column=0, columnspan=3, padx=5, pady=5)
 
     add_r_button = Button(history_window, text="ค้นหา", command=lambda: search_history(search_c_drop.get(), filename_drop.get(), data_entry.get()))
-    add_r_button.grid(row=2, column=0, columnspan=3, padx=20, pady=5)
+    add_r_button.grid(row=1, column=2, columnspan=3, padx=20, pady=5)
+
+    build_xsl_button = Button(history_window, text="บันทึกเป็นExel", command=lambda: get_exel_file_f(filename_drop.get()))
+    build_xsl_button.grid(row=2, column=1, columnspan=3, padx=20, pady=5)
 
     delete_r_button = Button(history_window, text="ลบประวัติ", command=lambda: delete_history(data_entry.get(), filename_drop.get()))
-    delete_r_button.grid(row=2, column=1, columnspan=3, padx=20, pady=5)
+    delete_r_button.grid(row=2, column=2, columnspan=3, padx=20, pady=5)
     delete_r_button.configure(state='disabled')
 
     history_frame = LabelFrame(history_window, text="ประวัติการใช้บริการ", width=100, height=100)
-    history_frame.grid(row=3, column=0, columnspan=3, padx=20, pady=5)
+    history_frame.grid(row=3, column=2, columnspan=3, padx=20, pady=5)
 
     start_label()

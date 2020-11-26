@@ -7,8 +7,6 @@ os.chdir('../')
 path = os.getcwd() + '/spa_project/data/json/'
 filename = 'rooms.json'
 
-print(os.path.abspath(os.getcwd()))
-
 def write_json(data): 
     with open(path + filename,'w') as f: 
         json.dump(data, f) 

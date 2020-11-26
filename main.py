@@ -341,5 +341,4 @@ see_history_btn.grid(row=0, column=1, padx=5, pady=5)
 booking_btn = Button(menu_frame, text="จองคิว", command=booking)
 booking_btn.grid(row=0, column=2, padx=5, pady=5)
 
-
 root.mainloop()

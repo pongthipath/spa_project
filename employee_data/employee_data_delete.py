@@ -14,6 +14,5 @@ def delete_this_employee(name):
         for p in data['EMPLOYEES']:
             if(p['name'] == name):
                 data['EMPLOYEES'].remove(p)
-                print(p)
     
         write_json(data)
